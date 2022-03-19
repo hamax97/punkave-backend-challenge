@@ -1,13 +1,15 @@
 export interface StationDto {
+  date: Date;
   kioskId: number;
-  coordinates: number[];
   name: string;
   totalDocks: number;
   docksAvailable: number;
   bikesAvailable: number;
   addressStreet: string;
-  addressCrity: string;
+  addressCity: string;
   addressState: string;
   addressZipCode: string;
+  latitude: number;
+  longitude: number;
   [otherField: string]: any;
 }

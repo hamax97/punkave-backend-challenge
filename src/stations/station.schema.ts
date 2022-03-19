@@ -5,11 +5,11 @@ export type StationDocument = Station & Document;
 
 @Schema()
 export class Station {
-  @Prop({ required: true })
-  kioskId: number;
+  @Prop()
+  date: Date;
 
   @Prop({ required: true })
-  coordinates: number[];
+  kioskId: number;
 
   @Prop({ required: true })
   name: string;
@@ -27,13 +27,19 @@ export class Station {
   addressStreet: string;
 
   @Prop({ required: true })
-  addressCrity: string;
+  addressCity: string;
 
   @Prop({ required: true })
   addressState: string;
 
   @Prop({ required: true })
   addressZipCode: string;
+
+  @Prop({ required: true })
+  latitude: number;
+
+  @Prop({ required: true })
+  longitude: number;
 }
 
 export const StationSchema = SchemaFactory.createForClass(Station);

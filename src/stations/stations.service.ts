@@ -1,11 +1,12 @@
-import { Model } from 'mongoose';
 import axios from 'axios';
+import { Model } from 'mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 
 import { Station, StationDocument } from './station.schema';
 import { StationDto } from './station.dto';
+import { handleAxiosError } from 'src/utils/http';
 
 @Injectable()
 export class StationsService {
@@ -46,22 +47,11 @@ export class StationsService {
       const res = await axios.get(this.INDEGO_API_URL);
       return res.data?.features as any[];
     } catch (err) {
-      if (err.response) {
-        const serverResponse = err.response;
-        throw new Error(
-          `${this.INDEGO_API_URL} responded with: ${serverResponse.status} - ${serverResponse.data}`,
-        );
-      } else if (err.request) {
-        throw new Error(`${this.INDEGO_API_URL} failed to respond`);
-      } else {
-        throw new Error(
-          `Couldn't make request to ${this.INDEGO_API_URL}: ${err}`,
-        );
-      }
+      handleAxiosError(err, this.INDEGO_API_URL);
     }
   }
 
-  async storeStationsInfo(date: Date) {
-    console.log(`Doing bulk insert for date: ${date}`);
+  async storeStationsInfo(stationsInfo: StationDto[]) {
+    return this.stationModel.insertMany(stationsInfo);
   }
 }
