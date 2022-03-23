@@ -15,9 +15,10 @@ export class Weather {
     {
       main: { type: String },
       description: { type: String },
+      _id: false,
     },
   ])
-  summary: object[];
+  weather: Record<string, any>;
 
   @Prop(
     raw({
@@ -34,6 +35,14 @@ export class Weather {
     }),
   )
   clouds: Record<string, any>;
+
+  @Prop(
+    raw({
+      speed: { type: Number },
+      deg: { type: Number },
+    }),
+  )
+  wind: Record<string, any>;
 
   @Prop(
     raw({
