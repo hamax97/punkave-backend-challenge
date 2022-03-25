@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class TimingService {
-  private readonly logger = new Logger(TimingService.name);
+  constructor(private readonly logger: Logger) {}
 
   measure(f: Function, self: any,...args: any[]) {
     const startTime = process.uptime();
