@@ -74,16 +74,14 @@ describe('timing service', () => {
     expect(result).toBe(fakeResult);
   });
 
-  test.skip('properly measure if result is a promise', async () => {
+  test('properly measure function if result is a promise', async () => {
     const fakeResult = { fakeProp: 'fakeValue' };
     const fakePromise = Promise.resolve(fakeResult);
     functionToMeasure = jest.fn().mockImplementation(() => fakePromise);
 
-    // TODO: Continue here ... How to check that the handler was added?
-    // - maybe checking process.uptime was called after something? how? any other idea?
+    const spy = jest.spyOn(fakePromise, 'then');
 
     await timingService.measure(functionToMeasure, {});
-    expect(processUptimeMock).toHaveBeenCalledTimes(2);
-    expect(loggerMock.debug).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
