@@ -1,9 +1,9 @@
-import { Module } from "@nestjs/common";
+import { Module, Logger } from "@nestjs/common";
 
 import { TimingService } from "./timing.service";
 
 @Module({
-  providers: [TimingService],
+  providers: [TimingService, Logger],
   exports: [TimingService]
 })
 export class SharedModule {}

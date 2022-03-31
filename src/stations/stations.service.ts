@@ -11,12 +11,12 @@ import { handleAxiosError } from 'src/utils/http';
 @Injectable()
 export class StationsService {
   private readonly INDEGO_API_URL: string;
-  private readonly logger = new Logger(StationsService.name);
 
   constructor(
     @InjectModel(Station.name)
     private readonly stationModel: Model<StationDocument>,
     private readonly env: ConfigService,
+    private readonly logger: Logger,
   ) {
     this.INDEGO_API_URL = this.env.get('INDEGO_API_URL');
   }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 
@@ -13,7 +13,7 @@ const modelDefinitions = [{ name: Station.name, schema: StationSchema }];
     ConfigModule.forRoot(),
     MongooseModule.forFeature(modelDefinitions),
   ],
-  providers: [StationsService],
+  providers: [StationsService, Logger],
   controllers: [StationsController],
   exports: [StationsService],
 })
