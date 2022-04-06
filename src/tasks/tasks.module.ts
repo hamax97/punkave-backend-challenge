@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { TasksService } from './tasks.service';
@@ -13,6 +13,6 @@ import { SharedModule } from 'src/shared/shared.module';
     SharedModule,
     ScheduleModule.forRoot(),
   ],
-  providers: [TasksService],
+  providers: [TasksService, Logger],
 })
 export class TasksModule {}
