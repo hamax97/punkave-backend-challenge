@@ -2,30 +2,32 @@ import { Test } from '@nestjs/testing';
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import axios from 'axios';
 
 import { StationsService } from './stations.service';
-import { Station, StationDocument } from './station.schema';
+import { Station } from './station.schema';
+import { StationDto } from './station.dto';
 
 jest.mock('axios');
 
 describe('stations service', () => {
   let stationsService: StationsService;
-  let mockStationModel: Model<StationDocument>;
+  let mockStationModelInsertMany;
   let mockConfigService: ConfigService;
   let mockLogger: Logger;
   let mockIndegoAPIURLEnv: string;
 
   beforeEach(async () => {
-    const stationModelToken = getModelToken(Station.name);
+    mockStationModelInsertMany = jest.fn();
 
     const moduleRef = await Test.createTestingModule({
       providers: [
         StationsService,
         {
-          provide: stationModelToken,
-          useValue: { fake: 'object' },
+          provide: getModelToken(Station.name),
+          useValue: {
+            insertMany: mockStationModelInsertMany,
+          },
         },
         {
           provide: ConfigService,
@@ -41,7 +43,6 @@ describe('stations service', () => {
     }).compile();
 
     stationsService = moduleRef.get(StationsService);
-    mockStationModel = moduleRef.get(stationModelToken);
     mockConfigService = moduleRef.get(ConfigService);
     mockLogger = moduleRef.get(Logger);
     mockIndegoAPIURLEnv = 'INDEGO_API_URL';
@@ -107,5 +108,14 @@ describe('stations service', () => {
     });
   });
 
-  test.todo('create station');
+  test('storeStationsInfo', async () => {
+    const mockStationsInfo = [
+      { name: '3rd St. Station' },
+      { name: '2nd St. Station' },
+    ] as StationDto[];
+    await stationsService.storeStationsInfo(mockStationsInfo);
+
+    expect(mockStationModelInsertMany).toHaveBeenCalledTimes(1);
+    expect(mockStationModelInsertMany).toHaveBeenCalledWith(mockStationsInfo);
+  });
 });

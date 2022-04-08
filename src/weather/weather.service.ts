@@ -14,12 +14,12 @@ export class WeatherService {
   private readonly OPEN_WEATHER_MAP_API_KEY: string;
   private readonly philadelphiaLatitude = 39.952583;
   private readonly philadelphiaLongitude = -75.165222;
-  private readonly logger = new Logger(WeatherService.name);
 
   constructor(
     @InjectModel(Weather.name)
     private readonly weatherModel: Model<WeatherDocument>,
     private readonly env: ConfigService,
+    private readonly logger: Logger,
   ) {
     this.OPEN_WEATHER_MAP_API_URL = this.env.get('OPEN_WEATHER_MAP_API_URL');
     this.OPEN_WEATHER_MAP_API_KEY = this.env.get('OPEN_WEATHER_MAP_API_KEY');
@@ -29,13 +29,13 @@ export class WeatherService {
     try {
       const weatherInfo = await this.requestWeatherInfo();
 
-      if (!weatherInfo) {
+      if (!weatherInfo || Object.keys(weatherInfo).length === 0) {
         throw new Error("Couldn't find weather info");
       }
 
       return weatherInfo as WeatherDto;
     } catch (err) {
-      this.logger.error(`Couldn't get stations information: ${err}`);
+      this.logger.error(`Couldn't get weather information: ${err}`);
     }
   }
 

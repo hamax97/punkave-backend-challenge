@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 
@@ -12,7 +12,7 @@ const modelDefinitions = [{ name: Weather.name, schema: WeatherSchema }];
     ConfigModule.forRoot(),
     MongooseModule.forFeature(modelDefinitions),
   ],
-  providers: [WeatherService],
+  providers: [WeatherService, Logger],
   exports: [WeatherService],
 })
 export class WeatherModule {}
