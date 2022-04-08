@@ -34,7 +34,9 @@ describe('tasks service', () => {
         {
           provide: TimingService,
           useValue: {
-            measure: jest.fn(),
+            measure: jest.fn().mockImplementation((fn: Function, self) => {
+              fn.call(self);
+            }),
           },
         },
         {
@@ -53,7 +55,54 @@ describe('tasks service', () => {
     mockLogger = moduleRef.get(Logger);
   });
 
-  test.todo('updateStationsAndWeatherInfo');
-  test.todo('updateStationsInfo');
-  test.todo('updateWeatherInfo');
+  test('updateStationsAndWeatherInfo', async () => {
+    tasksService.updateStationsInfo = jest.fn();
+    tasksService.updateWeatherInfo = jest.fn();
+
+    await tasksService.updateStationsAndWeatherInfo();
+
+    expect(mockLogger.log).toHaveBeenCalledTimes(1);
+    expect(mockTimingService.measure).toHaveBeenCalledTimes(2);
+    expect(tasksService.updateStationsInfo).toHaveBeenCalledTimes(1);
+    expect(tasksService.updateWeatherInfo).toHaveBeenCalledTimes(1);
+  });
+
+  test('updateStationsInfo', async () => {
+    const mockCurrentDate = new Date();
+    const mockStationsInfo = [
+      { name: 'Mock Station 1' },
+      { name: 'Mock Station 2' },
+    ];
+    mockStationsService.getStationsInfo = jest
+      .fn()
+      .mockResolvedValue(mockStationsInfo);
+
+    await tasksService.updateStationsInfo(mockCurrentDate);
+
+    expect(mockStationsService.getStationsInfo).toHaveBeenCalledTimes(1);
+    expect(mockStationsService.storeStationsInfo).toHaveBeenCalledTimes(1);
+    expect(mockStationsService.storeStationsInfo).toHaveBeenCalledWith(
+      mockStationsInfo.map((station) => ({
+        date: mockCurrentDate,
+        ...station,
+      })),
+    );
+  });
+
+  test('updateWeatherInfo', async () => {
+    const mockCurrentDate = new Date();
+    const mockWeatherInfo = { name: 'Some Weather Info' };
+    mockWeatherService.getWeatherInfo = jest
+      .fn()
+      .mockResolvedValue(mockWeatherInfo);
+
+    await tasksService.updateWeatherInfo(mockCurrentDate);
+
+    expect(mockWeatherService.getWeatherInfo).toHaveBeenCalledTimes(1);
+    expect(mockWeatherService.storeWeatherInfo).toHaveBeenCalledTimes(1);
+    expect(mockWeatherService.storeWeatherInfo).toHaveBeenCalledWith({
+      date: mockCurrentDate,
+      ...mockWeatherInfo,
+    });
+  });
 });
