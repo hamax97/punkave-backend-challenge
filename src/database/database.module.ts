@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { DBUri } from './config.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [DatabaseModule],
       useFactory: (dbUri: DBUri) => ({
