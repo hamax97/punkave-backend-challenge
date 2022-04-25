@@ -8,9 +8,7 @@ import { StationsController } from './stations.controller';
 const modelDefinitions = [{ name: Station.name, schema: StationSchema }];
 
 @Module({
-  imports: [
-    MongooseModule.forFeature(modelDefinitions),
-  ],
+  imports: [MongooseModule.forFeature(modelDefinitions)],
   providers: [StationsService, Logger],
   controllers: [StationsController],
   exports: [StationsService],

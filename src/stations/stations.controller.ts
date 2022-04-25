@@ -8,7 +8,6 @@ export class StationsController {
 
   @Get()
   async create() {
-    console.log("hre");
-    await this.stationsService.create(); // Should i use this last await?
+    return 'Accessing /stations endpoint';
   }
 }
