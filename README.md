@@ -1,6 +1,13 @@
-# Description
+# P'UNK AVE Backend Challenge
 
 Solution to the p'unk ave backend challenge as proposed [here](https://github.com/punkave/backend-challenge).
+
+Tech stack used:
+- NestJS (NodeJS).
+- Jest.
+- TypeScript.
+- Docker, hosted in [Linode](https://www.linode.com/).
+- MongoDB, hosted in [MongoDB Cloud](https://www.mongodb.com/cloud).
 
 ## Deploy
 
@@ -22,7 +29,7 @@ docker run --env-file .env -p 80:3000 hamax97/punkave-backend-challenge
 docker push hamax97/punkave-backend-challenge
 ```
 
-### Deploy container
+### Deploy Docker container
 
 ```bash
 docker run --env-file .env -p 80:3000 -d hamax97/punkave-backend-challenge
