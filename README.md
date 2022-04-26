@@ -10,7 +10,7 @@ Solution to the p'unk ave backend challenge as proposed [here](https://github.co
 docker build -t hamax97/punkave-backend-challenge .
 ```
 
-### Run Docker container
+### Test Docker image
 
 ```bash
 docker run --env-file .env -p 80:3000 hamax97/punkave-backend-challenge
@@ -20,6 +20,12 @@ docker run --env-file .env -p 80:3000 hamax97/punkave-backend-challenge
 
 ```bash
 docker push hamax97/punkave-backend-challenge
+```
+
+### Deploy container
+
+```bash
+docker run --env-file .env -p 80:3000 -d hamax97/punkave-backend-challenge
 ```
 
 ## Develop
