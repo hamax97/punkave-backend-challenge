@@ -25,7 +25,7 @@ export class WeatherService {
     this.OPEN_WEATHER_MAP_API_KEY = this.env.get('OPEN_WEATHER_MAP_API_KEY');
   }
 
-  async getWeatherInfo() {
+  async getAPIWeatherInfo() {
     try {
       const weatherInfo = await this.requestWeatherInfo();
 
@@ -60,5 +60,29 @@ export class WeatherService {
   async storeWeatherInfo(weatherInfo: WeatherDto) {
     const weather = new this.weatherModel(weatherInfo);
     return weather.save();
+  }
+
+  async getDBWeatherInfo(atDateTime: Date) {
+    const weather = await this.weatherModel.findOne(
+      {
+        $expr: {
+          $and: [
+            { $eq: [{ $year: '$date' }, atDateTime.getFullYear()] },
+            { $eq: [{ $month: '$date' }, atDateTime.getMonth() + 1] },
+            { $eq: [{ $dayOfMonth: '$date' }, atDateTime.getDate()] },
+            { $eq: [{ $hour: '$date' }, atDateTime.getHours()] },
+          ],
+        },
+      },
+      { _id: 0, __v: 0 },
+    );
+
+    if (!weather) {
+      this.logger.warn(
+        `Couldn't get weather information from DB for date: ${atDateTime.toISOString()}`,
+      );
+    }
+
+    return weather;
   }
 }

@@ -21,12 +21,7 @@ export class StationsService {
     this.INDEGO_API_URL = this.env.get('INDEGO_API_URL');
   }
 
-  async create() {
-    const createdStation = new this.stationModel({ name: 'Some cool name' });
-    await createdStation.save();
-  }
-
-  async getStationsInfo() {
+  async getAPIStationsInfo() {
     try {
       const stationsInfo = await this.requestStationsInfo();
 
@@ -38,7 +33,7 @@ export class StationsService {
         (stationInfo) => stationInfo.properties as StationDto,
       );
     } catch (err) {
-      this.logger.error(`Couldn't get stations information: ${err}`);
+      this.logger.error(`Couldn't get stations information from API: ${err}`);
     }
   }
 
@@ -53,5 +48,29 @@ export class StationsService {
 
   async storeStationsInfo(stationsInfo: StationDto[]) {
     return this.stationModel.insertMany(stationsInfo);
+  }
+
+  async getDBStationsInfo(atDateTime: Date) {
+    const stations = await this.stationModel.find(
+      {
+        $expr: {
+          $and: [
+            { $eq: [{ $year: '$date' }, atDateTime.getFullYear()] },
+            { $eq: [{ $month: '$date' }, atDateTime.getMonth() + 1] },
+            { $eq: [{ $dayOfMonth: '$date' }, atDateTime.getDate()] },
+            { $eq: [{ $hour: '$date' }, atDateTime.getHours()] },
+          ],
+        },
+      },
+      { _id: 0, __v: 0 },
+    );
+
+    if (stations.length === 0) {
+      this.logger.warn(
+        `Couldn't get any stations from DB for date: ${atDateTime.toISOString()}`,
+      );
+    }
+
+    return stations as StationDto[];
   }
 }

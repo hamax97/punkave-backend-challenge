@@ -30,7 +30,7 @@ export class TasksService {
   }
 
   async updateStationsInfo(date: Date) {
-    const stations = await this.stationsService.getStationsInfo();
+    const stations = await this.stationsService.getAPIStationsInfo();
 
     const processedStations = stations.map((station) => ({
       date: date,
@@ -41,7 +41,7 @@ export class TasksService {
   }
 
   async updateWeatherInfo(date: Date) {
-    const weatherInfo = await this.weatherService.getWeatherInfo();
+    const weatherInfo = await this.weatherService.getAPIWeatherInfo();
     const newWeatherInfo = { date: date, ...weatherInfo };
     return this.weatherService.storeWeatherInfo(newWeatherInfo);
   }

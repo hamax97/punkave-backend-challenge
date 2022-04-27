@@ -73,13 +73,13 @@ describe('tasks service', () => {
       { name: 'Mock Station 1' },
       { name: 'Mock Station 2' },
     ];
-    mockStationsService.getStationsInfo = jest
+    mockStationsService.getAPIStationsInfo = jest
       .fn()
       .mockResolvedValue(mockStationsInfo);
 
     await tasksService.updateStationsInfo(mockCurrentDate);
 
-    expect(mockStationsService.getStationsInfo).toHaveBeenCalledTimes(1);
+    expect(mockStationsService.getAPIStationsInfo).toHaveBeenCalledTimes(1);
     expect(mockStationsService.storeStationsInfo).toHaveBeenCalledTimes(1);
     expect(mockStationsService.storeStationsInfo).toHaveBeenCalledWith(
       mockStationsInfo.map((station) => ({
@@ -92,13 +92,13 @@ describe('tasks service', () => {
   test('updateWeatherInfo', async () => {
     const mockCurrentDate = new Date();
     const mockWeatherInfo = { name: 'Some Weather Info' };
-    mockWeatherService.getWeatherInfo = jest
+    mockWeatherService.getAPIWeatherInfo = jest
       .fn()
       .mockResolvedValue(mockWeatherInfo);
 
     await tasksService.updateWeatherInfo(mockCurrentDate);
 
-    expect(mockWeatherService.getWeatherInfo).toHaveBeenCalledTimes(1);
+    expect(mockWeatherService.getAPIWeatherInfo).toHaveBeenCalledTimes(1);
     expect(mockWeatherService.storeWeatherInfo).toHaveBeenCalledTimes(1);
     expect(mockWeatherService.storeWeatherInfo).toHaveBeenCalledWith({
       date: mockCurrentDate,

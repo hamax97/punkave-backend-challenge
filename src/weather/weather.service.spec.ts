@@ -17,10 +17,10 @@ describe('weather service', () => {
   let mockWeatherModelSave;
   let mockConfigService: ConfigService;
   let mockLogger: Logger;
-  let openWeatherAPIURLEnv = 'OPEN_WEATHER_MAP_API_URL';
-  let openWeatherAPIKeyEnv = 'OPEN_WEATHER_MAP_API_KEY';
-  let philadelphiaLatitude = 39.952583;
-  let philadelphiaLongitude = -75.165222;
+  const openWeatherAPIURLEnv = 'OPEN_WEATHER_MAP_API_URL';
+  const openWeatherAPIKeyEnv = 'OPEN_WEATHER_MAP_API_KEY';
+  const philadelphiaLatitude = 39.952583;
+  const philadelphiaLongitude = -75.165222;
 
   beforeEach(async () => {
     const weatherModelToken = getModelToken(Weather.name);
@@ -82,7 +82,7 @@ describe('weather service', () => {
       const apiPath = '/data/2.5/weather';
       const apiUrl = mockConfigService.get(openWeatherAPIURLEnv);
 
-      const result = await weatherService.getWeatherInfo();
+      const result = await weatherService.getAPIWeatherInfo();
 
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(apiPath, {
@@ -107,7 +107,7 @@ describe('weather service', () => {
 
       axios.get = jest.fn().mockResolvedValue(mockWeatherInfo);
 
-      await weatherService.getWeatherInfo();
+      await weatherService.getAPIWeatherInfo();
 
       expect(mockLogger.error).toHaveBeenCalledTimes(1);
       expect(mockLogger.error).toHaveBeenCalledWith(
@@ -117,11 +117,13 @@ describe('weather service', () => {
   });
 
   test('storeWeatherInfo', async () => {
-    const mockWeatherInfo = {name: 'Some weather object'} as WeatherDto;
+    const mockWeatherInfo = { name: 'Some weather object' } as WeatherDto;
     weatherService.storeWeatherInfo(mockWeatherInfo);
     expect(mockWeatherModel).toHaveBeenCalledTimes(1);
     expect(mockWeatherModel).toHaveBeenCalledWith(mockWeatherInfo);
 
     expect(mockWeatherModelSave).toHaveBeenCalledTimes(1);
   });
+
+  test.todo('getDBWeatherInfo');
 });

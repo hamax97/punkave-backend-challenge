@@ -60,7 +60,7 @@ describe('stations service', () => {
     expect(stationsService).toHaveProperty('INDEGO_API_URL');
   });
 
-  describe('getStationsInfo', () => {
+  describe('getAPIStationsInfo', () => {
     test('retrieves stations from indego API', async () => {
       const mockStations = {
         data: {
@@ -71,7 +71,7 @@ describe('stations service', () => {
       axios.get = jest.fn().mockResolvedValue(mockStations);
       const apiURL = mockConfigService.get(mockIndegoAPIURLEnv);
 
-      const result = await stationsService.getStationsInfo();
+      const result = await stationsService.getAPIStationsInfo();
 
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(apiURL);
@@ -84,15 +84,15 @@ describe('stations service', () => {
       let mockStations = {
         data: {},
       };
-      let mockErr = "Couldn't find any station";
+      const mockErr = "Couldn't find any station";
 
       axios.get = jest.fn().mockResolvedValue(mockStations);
 
-      await stationsService.getStationsInfo();
+      await stationsService.getAPIStationsInfo();
 
       expect(mockLogger.error).toHaveBeenCalledTimes(1);
       expect(mockLogger.error).toHaveBeenCalledWith(
-        `Couldn't get stations information: Error: ${mockErr}`,
+        `Couldn't get stations information from API: Error: ${mockErr}`,
       );
 
       mockStations = {
@@ -103,7 +103,7 @@ describe('stations service', () => {
 
       expect(mockLogger.error).toHaveBeenCalledTimes(1);
       expect(mockLogger.error).toHaveBeenCalledWith(
-        `Couldn't get stations information: Error: ${mockErr}`,
+        `Couldn't get stations information from API: Error: ${mockErr}`,
       );
     });
   });
@@ -118,4 +118,6 @@ describe('stations service', () => {
     expect(mockStationModelInsertMany).toHaveBeenCalledTimes(1);
     expect(mockStationModelInsertMany).toHaveBeenCalledWith(mockStationsInfo);
   });
+
+  test.todo('getDBStationsInfo');
 });
