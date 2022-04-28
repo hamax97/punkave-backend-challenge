@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Station, StationDocument } from './station.schema';
 import { StationDto } from './station.dto';
 import { handleAxiosError } from 'src/utils/http';
+import { createQueryBy } from 'src/utils/utils';
 
 @Injectable()
 export class StationsService {
@@ -51,19 +52,10 @@ export class StationsService {
   }
 
   async getDBStationsInfo(atDateTime: Date) {
-    const stations = await this.stationModel.find(
-      {
-        $expr: {
-          $and: [
-            { $eq: [{ $year: '$date' }, atDateTime.getFullYear()] },
-            { $eq: [{ $month: '$date' }, atDateTime.getMonth() + 1] },
-            { $eq: [{ $dayOfMonth: '$date' }, atDateTime.getDate()] },
-            { $eq: [{ $hour: '$date' }, atDateTime.getHours()] },
-          ],
-        },
-      },
-      { _id: 0, __v: 0 },
-    );
+    const stations = await this.stationModel.find(createQueryBy(atDateTime), {
+      _id: 0,
+      __v: 0,
+    });
 
     if (stations.length === 0) {
       this.logger.warn(
@@ -72,5 +64,23 @@ export class StationsService {
     }
 
     return stations as StationDto[];
+  }
+
+  async getDBStationInfo(atDateTime: Date, kioskId: number) {
+    const query = createQueryBy(atDateTime);
+    query['$expr']['$and'].push({ kioskId: kioskId });
+
+    const station = await this.stationModel.findOne(query, {
+      _id: 0,
+      __v: 0,
+    });
+
+    if (!station) {
+      this.logger.warn(
+        `Couldn't find station in DB for date: ${atDateTime.toISOString()}, kioskId: ${kioskId}`,
+      );
+    }
+
+    return station as StationDto;
   }
 }

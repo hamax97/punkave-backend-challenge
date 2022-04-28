@@ -1,4 +1,11 @@
-import { Controller, Get, HttpException, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  Query,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 
 import { StationsService } from './stations.service';
 import { parseDate } from 'src/utils/utils';
@@ -30,7 +37,29 @@ export class StationsController {
   }
 
   @Get(':kioskId')
-  async station() {
-    return '';
+  async station(
+    @Param('kioskId', ParseIntPipe) kioskId: number,
+    @Query('at') at: string,
+  ) {
+    const atDateTime = parseDate(at);
+
+    const weather = await this.weatherService.getDBWeatherInfo(atDateTime);
+    const station = await this.stationsService.getDBStationInfo(
+      atDateTime,
+      kioskId,
+    );
+
+    if (!station) {
+      throw new HttpException(
+        `Couldn't find information for date: ${at}, kioskId: ${kioskId}`,
+        404,
+      );
+    }
+
+    return {
+      at: station.date.toISOString(),
+      weather: weather,
+      station: station,
+    };
   }
 }

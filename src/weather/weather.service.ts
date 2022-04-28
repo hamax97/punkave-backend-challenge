@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Weather, WeatherDocument } from './weather.schema';
 import { WeatherDto } from './weather.dto';
 import { handleAxiosError } from 'src/utils/http';
+import { createQueryBy } from 'src/utils/utils';
 
 @Injectable()
 export class WeatherService {
@@ -63,19 +64,10 @@ export class WeatherService {
   }
 
   async getDBWeatherInfo(atDateTime: Date) {
-    const weather = await this.weatherModel.findOne(
-      {
-        $expr: {
-          $and: [
-            { $eq: [{ $year: '$date' }, atDateTime.getFullYear()] },
-            { $eq: [{ $month: '$date' }, atDateTime.getMonth() + 1] },
-            { $eq: [{ $dayOfMonth: '$date' }, atDateTime.getDate()] },
-            { $eq: [{ $hour: '$date' }, atDateTime.getHours()] },
-          ],
-        },
-      },
-      { _id: 0, __v: 0 },
-    );
+    const weather = await this.weatherModel.findOne(createQueryBy(atDateTime), {
+      _id: 0,
+      __v: 0,
+    });
 
     if (!weather) {
       this.logger.warn(

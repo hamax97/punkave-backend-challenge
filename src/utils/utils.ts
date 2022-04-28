@@ -11,3 +11,16 @@ export function parseDate(date: string) {
 
   return dateParsed;
 }
+
+export function createQueryBy(date: Date) {
+  return {
+    $expr: {
+      $and: [
+        { $eq: [{ $year: '$date' }, date.getFullYear()] },
+        { $eq: [{ $month: '$date' }, date.getMonth() + 1] },
+        { $eq: [{ $dayOfMonth: '$date' }, date.getDate()] },
+        { $eq: [{ $hour: '$date' }, date.getHours()] },
+      ],
+    },
+  } as object;
+}

@@ -120,4 +120,5 @@ describe('stations service', () => {
   });
 
   test.todo('getDBStationsInfo');
+  test.todo('getDBStationInfo');
 });
