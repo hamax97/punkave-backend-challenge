@@ -68,7 +68,7 @@ export class StationsService {
 
   async getDBStationInfo(atDateTime: Date, kioskId: number) {
     const query = createQueryBy(atDateTime);
-    query['$expr']['$and'].push({ kioskId: kioskId });
+    query['$expr']['$and'].push({ $eq: ['$kioskId', kioskId] });
 
     const station = await this.stationModel.findOne(query, {
       _id: 0,
