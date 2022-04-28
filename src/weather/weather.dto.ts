@@ -1,7 +1,7 @@
 export interface WeatherDto {
   date: Date;
   name: string;
-  summary: { main: string; description: string };
+  weather: { main: string; description: string };
   main: { temp: number; feelsLike: number; humidity: number };
   clouds: { all: number };
   wind: { speed: number; deg: number };

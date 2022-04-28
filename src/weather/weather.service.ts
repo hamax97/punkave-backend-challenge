@@ -77,4 +77,62 @@ export class WeatherService {
 
     return weather;
   }
+
+  async getDBRangeWeatherInfo(
+    fromDateTime: Date,
+    toDateTime: Date,
+    frequency: string,
+  ) {
+    let weather;
+    if (frequency && frequency === 'daily') {
+      weather = await this.findDaily(fromDateTime, toDateTime);
+    } else {
+      weather = await this.findHourly(fromDateTime, toDateTime);
+    }
+
+    if (weather.length === 0) {
+      this.logger.warn(
+        `Couldn't get weather information from DB for dates: from: ${fromDateTime.toISOString()}, to: ${toDateTime.toISOString()}`,
+      );
+    }
+
+    return weather as any as WeatherDto[];
+  }
+
+  private async findHourly(fromDateTime: Date, toDateTime: Date) {
+    return this.weatherModel.find(
+      {
+        date: { $gte: fromDateTime, $lte: toDateTime },
+      },
+      {
+        _id: 0,
+        __v: 0,
+      },
+    );
+  }
+
+  private async findDaily(fromDateTime: Date, toDateTime: Date) {
+    return this.weatherModel.aggregate([
+      {
+        $match: {
+          date: { $gte: fromDateTime, $lte: toDateTime },
+        },
+      },
+      {
+        $addFields: {
+          dayOfMonth: { $dayOfMonth: '$date' },
+        },
+      },
+      {
+        $group: {
+          _id: '$dayOfMonth',
+          doc: { $first: '$$ROOT' },
+        },
+      },
+      { $replaceRoot: { newRoot: '$doc' } },
+      {
+        $unset: ['dayOfMonth', '_id', '__v'],
+      },
+    ]);
+  }
 }

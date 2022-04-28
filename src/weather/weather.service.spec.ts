@@ -126,4 +126,5 @@ describe('weather service', () => {
   });
 
   test.todo('getDBWeatherInfo');
+  test.todo('getDBRangeWeatherInfo');
 });

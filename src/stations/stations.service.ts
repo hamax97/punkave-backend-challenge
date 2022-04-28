@@ -83,4 +83,74 @@ export class StationsService {
 
     return station as StationDto;
   }
+
+  async getDBRangeStationInfo(
+    fromDateTime: Date,
+    toDateTime: Date,
+    kioskId: number,
+    frequency: string,
+  ) {
+    let stations;
+
+    if (frequency && frequency === 'daily') {
+      stations = await this.findDaily(fromDateTime, toDateTime, kioskId);
+    } else {
+      stations = await this.findHourly(fromDateTime, toDateTime, kioskId);
+    }
+
+    if (stations.length === 0) {
+      this.logger.warn(
+        `Couldn't get stations information from DB for dates: from: ${fromDateTime.toISOString()}, to: ${toDateTime.toISOString()}, kioskId: ${kioskId}`,
+      );
+    }
+
+    return stations as StationDto[];
+  }
+
+  private async findHourly(
+    fromDateTime: Date,
+    toDateTime: Date,
+    kioskId: number,
+  ) {
+    return this.stationModel.find(
+      {
+        kioskId: kioskId,
+        date: { $gte: fromDateTime, $lte: toDateTime },
+      },
+      {
+        _id: 0,
+        __v: 0,
+      },
+    );
+  }
+
+  private async findDaily(
+    fromDateTime: Date,
+    toDateTime: Date,
+    kioskId: number,
+  ) {
+    return this.stationModel.aggregate([
+      {
+        $match: {
+          kioskId: kioskId,
+          date: { $gte: fromDateTime, $lte: toDateTime },
+        },
+      },
+      {
+        $addFields: {
+          dayOfMonth: { $dayOfMonth: '$date' },
+        },
+      },
+      {
+        $group: {
+          _id: '$dayOfMonth',
+          doc: { $first: '$$ROOT' },
+        },
+      },
+      { $replaceRoot: { newRoot: '$doc' } },
+      {
+        $unset: ['dayOfMonth', '_id', '__v'],
+      },
+    ]);
+  }
 }

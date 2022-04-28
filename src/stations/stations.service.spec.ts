@@ -121,4 +121,5 @@ describe('stations service', () => {
 
   test.todo('getDBStationsInfo');
   test.todo('getDBStationInfo');
+  test.todo('getDBRangeStationInfo');
 });

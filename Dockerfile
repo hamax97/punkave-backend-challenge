@@ -16,9 +16,6 @@ RUN npm run build
 
 FROM node:16.14-alpine3.15
 
-RUN apk update && apk add tzdata
-ENV TZ=America/New_York
-
 USER node
 
 ARG app=/home/node/app
