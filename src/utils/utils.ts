@@ -26,7 +26,7 @@ export function parseDate(date: string) {
   return parsedDate;
 }
 
-export function createQueryBy(date: Date) {
+export function queryExprByDate(date: Date) {
   return {
     $expr: {
       $and: [

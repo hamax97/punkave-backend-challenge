@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Station, StationDocument } from './station.schema';
 import { StationDto } from './station.dto';
 import { handleAxiosError } from 'src/utils/http';
-import { createQueryBy } from 'src/utils/utils';
+import { queryExprByDate } from 'src/utils/utils';
 
 @Injectable()
 export class StationsService {
@@ -52,7 +52,7 @@ export class StationsService {
   }
 
   async getDBStationsInfo(atDateTime: Date) {
-    const stations = await this.stationModel.find(createQueryBy(atDateTime), {
+    const stations = await this.stationModel.find(queryExprByDate(atDateTime), {
       _id: 0,
       __v: 0,
     });
@@ -67,7 +67,7 @@ export class StationsService {
   }
 
   async getDBStationInfo(atDateTime: Date, kioskId: number) {
-    const query = createQueryBy(atDateTime);
+    const query = queryExprByDate(atDateTime);
     query['$expr']['$and'].push({ $eq: ['$kioskId', kioskId] });
 
     const station = await this.stationModel.findOne(query, {
