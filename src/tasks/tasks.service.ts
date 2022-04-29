@@ -20,13 +20,21 @@ export class TasksService {
 
     const currentDate = new Date();
 
-    // TODO: Consider using Promise.all
-    await this.timingService.measure(
-      this.updateStationsInfo,
-      this,
-      currentDate,
-    );
-    await this.timingService.measure(this.updateWeatherInfo, this, currentDate);
+    try {
+      // TODO: Consider using Promise.all
+      await this.timingService.measure(
+        this.updateStationsInfo,
+        this,
+        currentDate,
+      );
+      await this.timingService.measure(
+        this.updateWeatherInfo,
+        this,
+        currentDate,
+      );
+    } catch (err) {
+      this.logger.error(`Problem updating information: ${err}`);
+    }
   }
 
   async updateStationsInfo(date: Date) {

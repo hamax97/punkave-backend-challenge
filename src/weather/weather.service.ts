@@ -36,7 +36,7 @@ export class WeatherService {
 
       return weatherInfo as WeatherDto;
     } catch (err) {
-      this.logger.error(`Couldn't get weather information: ${err}`);
+      throw new Error(`Couldn't get weather information: ${err}`);
     }
   }
 

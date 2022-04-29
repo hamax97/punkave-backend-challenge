@@ -26,7 +26,7 @@ export class StationsService {
     try {
       const stationsInfo = await this.requestStationsInfo();
 
-      if (!stationsInfo) {
+      if (!stationsInfo || stationsInfo.length === 0) {
         throw new Error("Couldn't find any station");
       }
 
@@ -34,7 +34,7 @@ export class StationsService {
         (stationInfo) => stationInfo.properties as StationDto,
       );
     } catch (err) {
-      this.logger.error(`Couldn't get stations information from API: ${err}`);
+      throw new Error(`Couldn't get stations information from API: ${err}`);
     }
   }
 

@@ -1,6 +1,6 @@
 # P'UNK AVENUE Backend Challenge
 
-Solution to the p'unk ave backend challenge as proposed [here](https://github.com/punkave/backend-challenge).
+Solution to the P'unk Avenue backend challenge as proposed [here](https://github.com/punkave/backend-challenge).
 
 Tech stack used:
 - NestJS (NodeJS).
