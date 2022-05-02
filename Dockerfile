@@ -23,7 +23,7 @@ RUN mkdir -p ${app}
 WORKDIR ${app}
 
 COPY --chown=node:node package*.json ./
-RUN npm i --only=production
+RUN npm i --production
 COPY --from=builder --chown=node:node ${app}/dist/ ./dist/
 
 CMD ["npm", "run", "start:prod"]
