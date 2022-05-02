@@ -14,7 +14,7 @@ Tech stack used:
 ### Tag Docker image
 
 ```bash
-docker build -t hamax97/punkave-backend-challenge .
+docker build --network host -t hamax97/punkave-backend-challenge .
 ```
 
 ### Test Docker image
@@ -32,6 +32,7 @@ docker push hamax97/punkave-backend-challenge
 ### Deploy Docker container
 
 ```bash
+docker pull hamax97/punkave-backend-challenge
 docker run --env-file .env -p 80:3000 -d hamax97/punkave-backend-challenge
 ```
 

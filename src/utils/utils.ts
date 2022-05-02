@@ -8,7 +8,7 @@ export function parseDate(date: string) {
     );
   }
 
-  if (date.length === 0) {
+  if (!date || date.length === 0) {
     throwException(date);
   }
 
